@@ -5,3 +5,6 @@
 
 /* Compact, borderless school-photo wordmark */
 .logo{display:inline-flex;align-items:center;gap:12px;line-height:1.2}.brand-photo{display:block;width:66px;height:42px;object-fit:cover;object-position:50% 77%;border:0;border-radius:5px;margin:0;box-shadow:none;flex-shrink:0}@media(max-width:600px){.brand-photo{width:54px;height:36px}.logo{gap:9px}}
+
+/* Sunrise-blue header */
+.header{background:#24477f;box-shadow:none}.header .logo,.header nav a{color:#fff}.header nav a:hover{color:#f1c5ac}.header .logo{color:#fff}
