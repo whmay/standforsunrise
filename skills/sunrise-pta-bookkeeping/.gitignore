@@ -1,0 +1,15 @@
+# Prevent accidental data commits under this skill directory
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.pdf
+*.docx
+*.doc
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.zip
+.env
+.env.*
