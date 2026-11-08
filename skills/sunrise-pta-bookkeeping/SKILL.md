@@ -53,6 +53,13 @@ Do not edit yellow/already-entered rows or delete outstanding entries merely bec
 ### 4. Identify purpose and categorize
 Review receipts, checks, reimbursements, donations, and platform sources. Record the supporting file/source and specific purpose; preserve original payee descriptions. Use `Category to confirm` for uncertain items.
 
+### 4a. MoneyMinder category assignment
+Consult [MoneyMinder category reference](references/moneyminder-categories.md) for the user-provided dropdown categories and confirmed mappings. The Excel output must include a `Category` column for editable entries, and preferably `Category Group`, `Category Confidence`, `Category Basis`, and `Review Notes`.
+
+The user authorizes **suggested** categories based on the transaction description, program, payment detail and approved prior coding. Explicitly distinguish suggestions from confirmed mappings and ask for feedback on ambiguous choices. Never change yellow/already-entered rows. Category inference does not override the separate evidence requirement for `Clear`.
+
+**Confirmed rule:** `Harvesting Excellence for Our Kids` maps to `Fundraising > Online Fundraiser` when the transaction is identifiable as part of that campaign. More mappings will be added over time.
+
 ### 5. Stripe itemization and reconciliation
 When Stripe CSVs are supplied:
 1. **Read every CSV**, including newly supplied exports, and inventory file names, payout IDs, source date coverage, and duplicate overlapping rows. Do not declare a payout missing until all supplied files have been checked.
@@ -75,7 +82,7 @@ Produce files only when supporting inputs suffice. Label provisional outputs acc
 **`YYYY-MM_MoneyMinder_Items_to_Enter.xlsx`**
 - Original-order checking and savings bank ledgers
 - `Items to Enter` for confirmed missing MoneyMinder entries, in original bank order with `Bank No.`
-- Itemized Stripe details with payer/contact, student when available, exact program/category, gross, fees and net
+- Itemized Stripe details with payer/contact, student when available, exact program/category, gross, fees and net\n- `Category` for editable entries, using MoneyMinder categories; suggested vs confirmed assignments clearly identified
 - `Processor Reconciliation` showing payout-to-bank math
 - `Exceptions & Questions`, `Change Log` and `Summary`
 - Preserve original workbook worksheet names/structure and yellow rows when a user-provided current workbook is being updated. Prefer approved prior-month formats.
@@ -92,7 +99,7 @@ Produce files only when supporting inputs suffice. Label provisional outputs acc
 - All provided statements/pages and CSVs accounted for, or gaps documented.
 - Every bank item appears exactly once in its original order.
 - Yellow entered items untouched; red items reviewed with logged changes.
-- Transaction purposes and supporting evidence clearly separated.
+- Transaction purposes and supporting evidence clearly separated.\n- Category column present; category suggestions clearly distinguished from user-confirmed mappings.
 - Stripe payouts reconciled to transaction-level gross, fees, refunds and net; no double counting.
 - Checking/savings balances, outstanding items and transfers reviewed.
 - Report/workbook totals agree; unresolved items visible.
