@@ -42,3 +42,7 @@ The organization-owned app was deployed with access restricted to the owner. Liv
 ## Unified registration
 
 The same deployed app now supports `?method=zelle` (default) and `?method=zeffy`. The channel is signed into the session token and recorded in the private ledger. Zeffy registration saves acceptance and expected details before revealing the exact supplied Zeffy checkout link. There is no automatic Zeffy transaction synchronization: match the checkout name/email/amount and reference where available against Zeffy payment exports. A pending registration or checkout-link click never confirms payment. The existing Bank sender name ledger column stores the checkout name for Zeffy; Method distinguishes the interpretation. Private test access remains in place.
+
+## Phone collection update
+
+Both channels now require a phone number instead of a sender/checkout name. To preserve historical records, the existing `Bank sender name` column is retained; new registrations leave it blank. Append `Phone number` in cell R1 of an existing ledger before activating the new deployment. All new rows have 18 columns and store the phone as text in column R. Earlier rows remain untouched. Use registration name/email/amount/reference for payment matching. The form explains that contact data is collected for contribution records and any future refund or return permitted by the terms; collection does not guarantee a refund.

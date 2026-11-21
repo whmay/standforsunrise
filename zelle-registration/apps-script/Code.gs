@@ -1,4 +1,4 @@
-const HEADERS = ['Reference', 'Registered at UTC', 'Contributor name', 'Email', 'Expected amount USD', 'Bank sender name', 'Method', 'Payment status', 'Terms accepted', 'Terms accepted at UTC', 'Terms snapshot SHA256', 'Terms confirmation text', 'Bank transaction ID', 'Actual received USD', 'Received at UTC', 'Reconciled by', 'Notes'];
+const HEADERS = ['Reference', 'Registered at UTC', 'Contributor name', 'Email', 'Expected amount USD', 'Bank sender name', 'Method', 'Payment status', 'Terms accepted', 'Terms accepted at UTC', 'Terms snapshot SHA256', 'Terms confirmation text', 'Bank transaction ID', 'Actual received USD', 'Received at UTC', 'Reconciled by', 'Notes', 'Phone number'];
 const ACCEPTANCE = 'I confirm that I have read and agree to the Contribution Terms. I understand that contributions are NOT tax-deductible and that any return of unused funds is conditional and not guaranteed.';
 
 // Run once in the editor, signed in with the organization's account.
@@ -54,13 +54,15 @@ function validate_(data) {
   if (!data || data.accepted !== true) throw new Error('Please read and confirm the Contribution Terms.');
   const name = cleanText_(data.name, 120);
   const email = cleanText_(data.email, 254).toLowerCase();
-  const sender = cleanText_(data.sender, 120);
+  const phone = cleanText_(data.phone, 40);
+  const digits = phone.replace(/\D/g, '');
+  if (!/^\+?[0-9 ()-]+$/.test(phone) || digits.length < 7 || digits.length > 15) throw new Error('Please enter a valid phone number, including country code if outside the U.S.');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Please enter a valid email address.');
   const amountText = cleanText_(data.amount, 16);
   if (!/^\d+(\.\d{1,2})?$/.test(amountText)) throw new Error('Enter a positive USD amount with no more than two decimal places.');
   const cents = Math.round(Number(amountText) * 100);
   if (!Number.isSafeInteger(cents) || cents < 1 || cents > 100000000) throw new Error('Please check the expected contribution amount.');
-  return { name, email, sender, amount: cents / 100 };
+  return { name, email, phone, amount: cents / 100 };
 }
 
 // Avoid executing user-controlled spreadsheet formulas.
@@ -82,7 +84,7 @@ function registerContribution(data) {
     const existing = sheet.getLastRow() > 1 ? sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).createTextFinder(reference).matchEntireCell(true).findNext() : null;
     if (!existing) {
       const now = new Date().toISOString();
-      sheet.appendRow([reference, now, cell_(fields.name), cell_(fields.email), fields.amount, cell_(fields.sender), data.method === 'zeffy' ? 'Zeffy' : 'Zelle', 'Pending — not verified received', true, now, data.termsHash, ACCEPTANCE, '', '', '', '', '']);
+      sheet.appendRow([reference, now, cell_(fields.name), cell_(fields.email), fields.amount, '', data.method === 'zeffy' ? 'Zeffy' : 'Zelle', 'Pending — not verified received', true, now, data.termsHash, ACCEPTANCE, '', '', '', '', '', cell_(fields.phone)]);
       SpreadsheetApp.flush();
     }
     return { reference, saved: true, method: data.method };
