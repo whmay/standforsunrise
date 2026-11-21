@@ -7,7 +7,7 @@ This branch contains a Google Apps Script app that saves registrations in a priv
 1. Sign in as the organization at https://script.google.com/ and create a project named `Stand for Sunrise Zelle Registration`.
 2. Replace `Code.gs` with `apps-script/Code.gs`. Add HTML files named `Index` and `Terms`, copying the matching files in this directory. `Terms.html` is an archived copy of the reviewed website terms; the form links to this copy and stores its SHA256, so a later website edit does not change the accepted text.
 3. In Project Settings enable “Show appsscript.json manifest file” and replace it with `apps-script/appsscript.json`.
-4. Run `setup_` from the editor and authorize the organization account. This creates a new private spreadsheet. Its URL is in the execution log. Do not publish the sheet or give link-based access. Share only with authorized recordkeepers.
+4. Private functions ending in `_` do not appear in the editor function selector. Temporarily add `function initializeLedger() { setup_(); }` at the end of Code.gs, select `initializeLedger`, run it, and authorize the organization account. Remove this public wrapper and save again before deployment. This creates a new private spreadsheet. Its URL is in the execution log. Do not publish the sheet or give link-based access. Share only with authorized recordkeepers.
 5. Deploy > New deployment > Web app. Execute as the organization account; access must allow intended external contributors (normally Anyone). Workspace administrator policy may restrict this. Keep the spreadsheet private even though the registration web app is public. Google deployment reference: https://developers.google.com/apps-script/guides/web
 6. Send the resulting `/exec` URL back for website integration. Do not substitute the `/dev` test URL.
 
@@ -34,3 +34,7 @@ For corrections preserve the original registration and note the change. Back up 
 - `tests/`: local validation/persistence contract checks using mocks, not a live Google deployment test.
 
 Production `contribute.html` is intentionally unchanged until the organization-owned app has been deployed and tested. Integration will replace the inline Zelle details with a link to the `/exec` app; the app will still independently require acceptance.
+
+## Private pilot verified — November 21, 2026
+
+The organization-owned app was deployed with access restricted to the owner. Live browser checks confirmed that unchecked terms block submission, a synthetic registration creates a pending row with the matching server reference, acceptance timestamp and 64-character terms hash, and the QR is shown only after a successful save. The archived terms link was opened successfully. The spreadsheet sharing control confirmed private to the owner. The synthetic row was explicitly marked TEST/no payment and excluded from contribution totals. No money was transferred. The temporary initialization wrapper was removed before deployment. Production website integration and public access remain pending. Private ledger identifiers and registration records are intentionally not stored in this repository.
