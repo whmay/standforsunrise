@@ -53,3 +53,11 @@ details{border-bottom:1px solid #dce3ec;padding:19px 0}summary{cursor:pointer;fo
  #home .section h2{font-size:2rem;line-height:1.18}
  #home .who-copy{font-size:1rem}
 }
+
+/* Keep each timeline milestone only as tall as its own content. */
+#home .closure-timeline{align-items:flex-start;padding-bottom:4px;margin-bottom:10px}
+#home .timeline-card{min-height:0;padding:22px 24px}
+#home .timeline-date{margin-bottom:16px}
+#home .timeline-copy p{line-height:1.65}
+#home #updates{padding-bottom:32px}
+@media(max-width:600px){#home .timeline-card{padding:20px}#home #updates{padding-bottom:26px}}
