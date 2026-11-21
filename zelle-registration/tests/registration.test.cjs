@@ -25,7 +25,7 @@ function payload(method='zelle'){const nonce=crypto.randomUUID(),expires=Date.no
 const data=payload();
 const result=context.registerContribution(data);
 assert.equal(result.saved,true);assert.match(result.reference,/^SFS-[A-F0-9]{32}$/);
-assert.equal(rows.length,2);assert.equal(rows[1][4],25.5);assert.equal(rows[1][5],'');assert.equal(rows[1][17],'+1 (202) 555-0100');assert.equal(rows[1][7],'Pending — not verified received');assert.equal(rows[1][8],true);assert.equal(rows[1][10],context.termsHash_());
+assert.equal(rows.length,2);assert.equal(rows[1][4],25.5);assert.equal(rows[1][5],'');assert.equal(rows[1][17],"'+1 (202) 555-0100");assert.equal(rows[1][7],'Pending — not verified received');assert.equal(rows[1][8],true);assert.equal(rows[1][10],context.termsHash_());
 context.registerContribution(data);assert.equal(rows.length,2,'same-session retry must be idempotent');
 for(const update of [{accepted:false},{amount:'0'},{amount:'1.234'},{amount:'-10'},{email:'bad'},{phone:''},{phone:'not a phone'},{phone:'123'},{phone:'+1234567890123456'},{termsHash:'wrong'},{signature:'wrong'},{expires:0}])assert.throws(()=>context.registerContribution({...payload(),...update}));
 const zeffy=payload('zeffy'); context.registerContribution(zeffy); assert.equal(rows[2][6],'Zeffy'); assert.throws(()=>context.registerContribution({...payload(),method:'zeffy'})); assert.throws(()=>context.registerContribution({...payload(),method:'other'}));
