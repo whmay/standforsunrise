@@ -20,3 +20,36 @@ details{border-bottom:1px solid #dce3ec;padding:19px 0}summary{cursor:pointer;fo
 
 /* Clean milestone cards without decorative line or dot */
 .timeline-date{border-bottom:0;padding-bottom:0;margin-bottom:22px}.timeline-date:after{display:none}
+
+/* A tighter home-page rhythm, with an editorial introduction. */
+#home .section{padding:56px 0}
+#home #who{padding:52px 0 48px}
+#home .section .eyebrow{margin:0 0 12px}
+#home .section h2{margin:0 0 18px;font-size:clamp(2rem,3.3vw,3rem)}
+#home .who-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:52px;align-items:start}
+#home .who-heading h2{max-width:410px;color:var(--navy);font-size:clamp(2.1rem,3.5vw,3rem);margin:0}
+#home .who-copy{padding-top:3px;font-size:1.03rem}
+#home .who-copy>p{margin:0 0 18px}
+#home .who-copy .independence-note{margin:0;padding-left:16px;border-left:3px solid var(--gold);color:var(--muted);font-size:.95rem}
+#home #updates>.container>.narrow{max-width:900px;margin-left:0}
+#home .timeline-controls{margin-top:16px}
+#home .closure-timeline{margin-bottom:16px}
+#home .timeline-source{margin-bottom:0}
+#home .governance-docs{margin-top:20px}
+#home .governance-docs article{padding:18px 0}
+#home .section .narrow>p:last-child{margin-bottom:0}
+#home #faq details{padding:16px 0}
+@media(max-width:850px){
+ #home .who-layout{grid-template-columns:1fr;gap:22px}
+ #home .who-heading h2{max-width:none}
+ #home .who-copy{padding:0}
+ #home .section{padding:44px 0}
+ #home #who{padding:40px 0}
+}
+@media(max-width:600px){
+ #home .section{padding:36px 0}
+ #home #who{padding:34px 0}
+ #home .who-layout{gap:18px}
+ #home .section h2{font-size:2rem;line-height:1.18}
+ #home .who-copy{font-size:1rem}
+}
