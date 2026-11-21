@@ -21,15 +21,16 @@ const context = {
 };
 vm.createContext(context);vm.runInContext(code,context);
 rows.push(vm.runInContext('HEADERS',context));
-function payload(){const nonce=crypto.randomUUID(),expires=Date.now()+600000;return {name:'Example Contributor',email:'example@example.org',sender:'Example Sender',amount:'25.50',accepted:true,nonce,expires,signature:context.sign_(nonce+':'+expires),termsHash:context.termsHash_()};}
+function payload(method='zelle'){const nonce=crypto.randomUUID(),expires=Date.now()+600000;return {name:'Example Contributor',email:'example@example.org',sender:'Example Sender',amount:'25.50',accepted:true,nonce,expires,method,signature:context.sign_(nonce+':'+expires+':'+method),termsHash:context.termsHash_()};}
 const data=payload();
 const result=context.registerContribution(data);
 assert.equal(result.saved,true);assert.match(result.reference,/^SFS-[A-F0-9]{32}$/);
 assert.equal(rows.length,2);assert.equal(rows[1][4],25.5);assert.equal(rows[1][7],'Pending — not verified received');assert.equal(rows[1][8],true);assert.equal(rows[1][10],context.termsHash_());
 context.registerContribution(data);assert.equal(rows.length,2,'same-session retry must be idempotent');
 for(const update of [{accepted:false},{amount:'0'},{amount:'1.234'},{amount:'-10'},{email:'bad'},{sender:''},{termsHash:'wrong'},{signature:'wrong'},{expires:0}])assert.throws(()=>context.registerContribution({...payload(),...update}));
-const injection=payload();injection.name='=IMPORTXML("test")';context.registerContribution(injection);assert.equal(rows[2][2],"'=IMPORTXML(\"test\")");
-failOpen=true;assert.throws(()=>context.registerContribution(payload()),/could not confirm/);assert.equal(rows.length,3);failOpen=false;
+const zeffy=payload('zeffy'); context.registerContribution(zeffy); assert.equal(rows[2][6],'Zeffy'); assert.throws(()=>context.registerContribution({...payload(),method:'zeffy'})); assert.throws(()=>context.registerContribution({...payload(),method:'other'}));
+const injection=payload();injection.name='=IMPORTXML("test")';context.registerContribution(injection);assert.equal(rows[3][2],"'=IMPORTXML(\"test\")");
+failOpen=true;assert.throws(()=>context.registerContribution(payload()),/could not confirm/);assert.equal(rows.length,4);failOpen=false;
 const html=readFileSync(__dirname+'/../apps-script/Index.html','utf8');
 assert.ok(html.includes('id="result" class="panel" hidden'));
 assert.ok(html.includes('withSuccessHandler(saved).withFailureHandler(failed)'));

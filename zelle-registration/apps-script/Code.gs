@@ -25,11 +25,13 @@ function doGet(e) {
     return HtmlService.createHtmlOutput('Registration is not available yet. Please contact contact@standforsunrise.org.');
   }
   const template = HtmlService.createTemplateFromFile('Index');
+  const method = e && e.parameter && e.parameter.method ? e.parameter.method : 'zelle';
+  if (!['zelle', 'zeffy'].includes(method)) return HtmlService.createHtmlOutput('Please choose Zelle or Zeffy from our contribution page.');
   const nonce = Utilities.getUuid();
   const expires = Date.now() + 2 * 60 * 60 * 1000;
-  const signature = sign_(nonce + ':' + expires);
-  template.config = JSON.stringify({ nonce, expires, signature, termsHash: termsHash_(), termsUrl: ScriptApp.getService().getUrl() + '?page=terms' }).replace(/</g, '\\u003c');
-  return template.evaluate().setTitle('Stand for Sunrise — Zelle Registration').addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  const signature = sign_(nonce + ':' + expires + ':' + method);
+  template.config = JSON.stringify({ nonce, expires, signature, method, termsHash: termsHash_(), termsUrl: ScriptApp.getService().getUrl() + '?page=terms' }).replace(/</g, '\\u003c');
+  return template.evaluate().setTitle('Stand for Sunrise — Contribution Registration').addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
 function sign_(text) {
@@ -66,7 +68,7 @@ function cell_(text) { return /^[=+\-@]/.test(text) ? "'" + text : text; }
 
 function registerContribution(data) {
   const fields = validate_(data);
-  if (!/^[0-9a-f-]{36}$/.test(data.nonce || '') || !Number.isFinite(data.expires) || data.expires < Date.now() || data.expires > Date.now() + 2 * 60 * 60 * 1000 || data.signature !== sign_(data.nonce + ':' + data.expires)) {
+  if (!['zelle', 'zeffy'].includes(data.method) || !/^[0-9a-f-]{36}$/.test(data.nonce || '') || !Number.isFinite(data.expires) || data.expires < Date.now() || data.expires > Date.now() + 2 * 60 * 60 * 1000 || data.signature !== sign_(data.nonce + ':' + data.expires + ':' + data.method)) {
     throw new Error('This registration session has expired. Refresh the page and try again.');
   }
   if (data.termsHash !== termsHash_()) throw new Error('The terms have changed. Refresh the page and review them again.');
@@ -80,10 +82,10 @@ function registerContribution(data) {
     const existing = sheet.getLastRow() > 1 ? sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).createTextFinder(reference).matchEntireCell(true).findNext() : null;
     if (!existing) {
       const now = new Date().toISOString();
-      sheet.appendRow([reference, now, cell_(fields.name), cell_(fields.email), fields.amount, cell_(fields.sender), 'Zelle', 'Pending — not verified received', true, now, data.termsHash, ACCEPTANCE, '', '', '', '', '']);
+      sheet.appendRow([reference, now, cell_(fields.name), cell_(fields.email), fields.amount, cell_(fields.sender), data.method === 'zeffy' ? 'Zeffy' : 'Zelle', 'Pending — not verified received', true, now, data.termsHash, ACCEPTANCE, '', '', '', '', '']);
       SpreadsheetApp.flush();
     }
-    return { reference, saved: true };
+    return { reference, saved: true, method: data.method };
   } catch (error) {
     // Never return sheet identifiers, donor rows, or internal errors publicly.
     throw new Error('We could not confirm your registration. Please retry on this page, or contact contact@standforsunrise.org.');
